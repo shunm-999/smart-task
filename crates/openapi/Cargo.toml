@@ -1,0 +1,9 @@
+[package]
+name = "openapi"
+version.workspace = true
+edition.workspace = true
+description.workspace = true
+repository.workspace = true
+
+[dependencies]
+smart_task_openapi_axum = { workspace = true}

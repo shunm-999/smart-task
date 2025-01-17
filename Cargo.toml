@@ -1,8 +1,32 @@
-[package]
-name = "smart-task"
+[workspace]
+members = ["crates/openapi"]
+[workspace.package]
 version = "0.1.0"
 edition = "2021"
+description = "A simple todo application"
+repository = "https://github.com/shunm-999/smart-task"
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+[package]
+name = "smart-task"
+version.workspace = true
+edition.workspace = true
+description.workspace = true
+repository.workspace = true
+publish = false
+
+[workspace.dependencies]
+smart_task_openapi_axum = { version = "1.0.11"}
+
+serde = { version = "1.0.202", features = ["derive"] }
+serde_with = "3.8.1"
+actix-web = { version = "4.6.0", default-features = false, features = [
+    "macros",
+    "rustls-0_23",
+    "compress-brotli",
+    "compress-gzip",
+    "compress-zstd",
+    "cookies",
+] }
 
 [dependencies]
+actix-web = { workspace = true }
