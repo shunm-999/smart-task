@@ -1,3 +1,3 @@
-use smart_task_openapi_axum::models::ModelsPeriodTag;
-
-pub type ApiTag = ModelsPeriodTag;
+pub mod project;
+pub mod tag;
+pub mod task;
