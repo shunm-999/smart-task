@@ -1,4 +1,6 @@
-mod tag;
+pub mod project;
+pub mod tag;
+pub mod task;
 
 #[macro_export]
 macro_rules! create_response {
@@ -8,34 +10,34 @@ macro_rules! create_response {
             pub struct [<Api $name>]($name);
 
             // From トレイトの実装
-            impl From<[<Api $name>]> for HttpResponse {
+            impl From<[<Api $name>]> for actix_web::HttpResponse {
                 fn from(value: [<Api $name>]) -> Self {
                     let value = value.0;
 
                     match value {
                         $name::Status201_TheRequestHasSucceededAndANewResourceHasBeenCreatedAsAResult(res) => {
-                            HttpResponse::Created().json(res)
+                            actix_web::HttpResponse::Created().json(res)
                         }
                         $name::Status400_TheServerCouldNotUnderstandTheRequestDueToInvalidSyntax(res) => {
-                            HttpResponse::BadRequest().json(res)
+                            actix_web::HttpResponse::BadRequest().json(res)
                         }
                         $name::Status401_AccessIsUnauthorized(res) => {
-                            HttpResponse::Unauthorized().json(res)
+                            actix_web::HttpResponse::Unauthorized().json(res)
                         }
                         $name::Status403_AccessIsForbidden(res) => {
-                            HttpResponse::Forbidden().json(res)
+                            actix_web::HttpResponse::Forbidden().json(res)
                         }
                         $name::Status404_TheServerCannotFindTheRequestedResource(res) => {
-                            HttpResponse::NotFound().json(res)
+                            actix_web::HttpResponse::NotFound().json(res)
                         }
                         $name::Status429_ClientError(res) => {
-                            HttpResponse::TooManyRequests().json(res)
+                            actix_web::HttpResponse::TooManyRequests().json(res)
                         }
                         $name::Status500_ServerError(res) => {
-                            HttpResponse::InternalServerError().json(res)
+                            actix_web::HttpResponse::InternalServerError().json(res)
                         }
                         $name::Status503_ServiceUnavailable(res) => {
-                            HttpResponse::ServiceUnavailable().json(res)
+                            actix_web::HttpResponse::ServiceUnavailable().json(res)
                         }
                     }
                 }
@@ -52,34 +54,34 @@ macro_rules! ok_response {
             pub struct [<Api $name>]($name);
 
             // From トレイトの実装
-            impl From<[<Api $name>]> for HttpResponse {
+            impl From<[<Api $name>]> for actix_web::HttpResponse {
                 fn from(value: [<Api $name>]) -> Self {
                     let value = value.0;
 
                     match value {
                         $name::Status200_TheRequestHasSucceeded(res) => {
-                            HttpResponse::Created().json(res)
+                            actix_web::HttpResponse::Created().json(res)
                         }
                         $name::Status400_TheServerCouldNotUnderstandTheRequestDueToInvalidSyntax(res) => {
-                            HttpResponse::BadRequest().json(res)
+                            actix_web::HttpResponse::BadRequest().json(res)
                         }
                         $name::Status401_AccessIsUnauthorized(res) => {
-                            HttpResponse::Unauthorized().json(res)
+                            actix_web::HttpResponse::Unauthorized().json(res)
                         }
                         $name::Status403_AccessIsForbidden(res) => {
-                            HttpResponse::Forbidden().json(res)
+                            actix_web::HttpResponse::Forbidden().json(res)
                         }
                         $name::Status404_TheServerCannotFindTheRequestedResource(res) => {
-                            HttpResponse::NotFound().json(res)
+                            actix_web::HttpResponse::NotFound().json(res)
                         }
                         $name::Status429_ClientError(res) => {
-                            HttpResponse::TooManyRequests().json(res)
+                            actix_web::HttpResponse::TooManyRequests().json(res)
                         }
                         $name::Status500_ServerError(res) => {
-                            HttpResponse::InternalServerError().json(res)
+                            actix_web::HttpResponse::InternalServerError().json(res)
                         }
                         $name::Status503_ServiceUnavailable(res) => {
-                            HttpResponse::ServiceUnavailable().json(res)
+                            actix_web::HttpResponse::ServiceUnavailable().json(res)
                         }
                     }
                 }

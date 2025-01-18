@@ -1,4 +1,4 @@
-use openapi::task::{ApiTask, ApiTaskPriority, ApiTaskStatus};
+use openapi::models::task::{ApiTask, ApiTaskPriority, ApiTaskStatus};
 
 pub fn test() {
     let task = ApiTask::new(

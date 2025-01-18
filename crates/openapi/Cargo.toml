@@ -11,3 +11,5 @@ smart_task_openapi_axum = { workspace = true}
 actix-web = { workspace = true }
 chrono = { workspace = true }
 paste = "1.0.15"
+serde = { workspace = true }
+serde_json = { workspace = true}

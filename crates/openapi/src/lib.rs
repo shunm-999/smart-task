@@ -1,7 +1,5 @@
-mod models;
-mod response;
-
-pub use models::*;
+pub mod models;
+pub mod response;
 
 // TODO
 // typeでのエイリアスを使って、モデルの名前を変更する
