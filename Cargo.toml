@@ -1,5 +1,3 @@
-[workspace]
-members = ["crates/openapi"]
 [workspace.package]
 version = "0.1.0"
 edition = "2021"
@@ -14,9 +12,23 @@ description.workspace = true
 repository.workspace = true
 publish = false
 
+[workspace]
+members = [
+    "crates/openapi",
+    "crates/server",
+    "crates/domain",
+    "crates/infra",
+]
+
 [workspace.dependencies]
+openapi = { path = "./crates/openapi" }
+server = { path = "./crates/server" }
+domain = { path = "./crates/domain" }
+infra = { path = "./crates/infra" }
+
 smart_task_openapi_axum = { version = "1.0.11"}
 
+chrono = { version = "0.4.38", features = ["serde"] }
 serde = { version = "1.0.202", features = ["derive"] }
 serde_with = "3.8.1"
 actix-web = { version = "4.6.0", default-features = false, features = [

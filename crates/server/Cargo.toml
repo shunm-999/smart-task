@@ -1,10 +1,12 @@
 [package]
-name = "openapi"
+name = "server"
 version.workspace = true
 edition.workspace = true
 description.workspace = true
 repository.workspace = true
 
 [dependencies]
-smart_task_openapi_axum = { workspace = true}
+openapi = { workspace = true }
+
 chrono = { workspace = true }
+actix-web = { workspace = true }
