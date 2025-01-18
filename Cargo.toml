@@ -36,7 +36,7 @@ actix-web = { version = "4.6.0", default-features = false, features = [
     "compress-zstd",
     "cookies",
 ] }
-chrono = { version = "0.4.38", features = ["serde"] }
+chrono = { version = "0.4.39", features = ["serde"] }
 serde = { version = "1.0.202", features = ["derive"] }
 serde_with = "3.8.1"
 uuid = { version = "1.8.0", features = ["serde", "v7"] }
