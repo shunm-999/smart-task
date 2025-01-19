@@ -1,4 +1,4 @@
-use crate::models::tag::ApiTag;
+use crate::model::tag::ApiTag;
 use crate::{create_response, ok_response};
 use smart_task_openapi_axum::apis::tag::{
     TagsCreateResponse, TagsDeleteResponse, TagsGetResponse, TagsListResponse, TagsUpdateResponse,

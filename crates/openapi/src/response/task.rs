@@ -1,4 +1,4 @@
-use crate::models::task::ApiTask;
+use crate::model::task::ApiTask;
 use crate::{create_response, ok_response};
 use smart_task_openapi_axum::apis::task::{
     TasksCreateResponse, TasksDeleteResponse, TasksGetResponse, TasksListResponse,
