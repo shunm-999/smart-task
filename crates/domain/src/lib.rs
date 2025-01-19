@@ -1,4 +1,5 @@
-mod model;
+pub mod model;
+pub mod repository;
 
 pub enum Error {
     BadRequest,
@@ -10,6 +11,8 @@ pub enum Error {
     NotDeletableResource,
     ServiseMaintenance,
 }
+
+pub type Result<T> = std::result::Result<T, Error>;
 
 #[macro_export]
 macro_rules! data_id {
@@ -33,6 +36,40 @@ macro_rules! data_id {
         impl Into<String> for $name {
             fn into(self) -> String {
                 self.0.to_string()
+            }
+        }
+    };
+}
+
+#[macro_export]
+macro_rules! data_enum {
+    ($name:ident, $($variant:ident),*) => {
+        #[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
+        pub enum $name {
+            $(
+                $variant,
+            )*
+        }
+    };
+}
+
+#[macro_export]
+macro_rules! data_model {
+    ($name:ident, $($field:ident: $type:ty),*) => {
+        #[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
+        pub struct $name {
+            $(
+                pub $field: $type,
+            )*
+        }
+
+        impl $name {
+            pub fn new($($field: $type),*) -> Self {
+                Self {
+                    $(
+                        $field,
+                    )*
+                }
             }
         }
     };
