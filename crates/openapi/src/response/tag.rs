@@ -5,9 +5,39 @@ use smart_task_openapi_axum::apis::tag::{
 };
 use std::str::FromStr;
 
-create_response!(TagsCreateResponse, ApiTag);
+create_response!(
+    ApiTagsCreateResponse,
+    TagsCreateResponse,
+    MapToTagsCreateResponse,
+    ApiTag,
+    map_to_create_tag_response
+);
 
-ok_response!(TagsGetResponse, ApiTag);
-ok_response!(TagsListResponse, Vec<ApiTag>);
-ok_response!(TagsUpdateResponse, ApiTag);
-ok_response!(TagsDeleteResponse, ApiTag);
+ok_response!(
+    ApiTagsGetResponse,
+    TagsGetResponse,
+    MapToTagsGetResponse,
+    ApiTag,
+    map_to_get_tag_response
+);
+ok_response!(
+    ApiTagsListResponse,
+    TagsListResponse,
+    MapToTagsListResponse,
+    Vec<ApiTag>,
+    map_to_list_tag_response
+);
+ok_response!(
+    ApiTagsUpdateResponse,
+    TagsUpdateResponse,
+    MapToTagsUpdateResponse,
+    ApiTag,
+    map_to_update_tag_response
+);
+ok_response!(
+    ApiTagsDeleteResponse,
+    TagsDeleteResponse,
+    MapToTagsDeleteResponse,
+    ApiTag,
+    map_to_delete_tag_response
+);
