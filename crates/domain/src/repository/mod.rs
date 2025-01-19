@@ -1,3 +1,3 @@
-mod project;
-mod tag;
-mod task;
+pub mod project;
+pub mod tag;
+pub mod task;
