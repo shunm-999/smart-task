@@ -1,14 +1,39 @@
-pub fn add(left: u64, right: u64) -> u64 {
-    left + right
+mod model;
+
+pub enum Error {
+    BadRequest,
+    Unauthorized,
+    Forbidden,
+    NotFound,
+    InternalServerError,
+    TooManyRequests,
+    NotDeletableResource,
+    ServiseMaintenance,
 }
 
-#[cfg(test)]
-mod tests {
-    use super::*;
+#[macro_export]
+macro_rules! data_id {
+    ($name:ident) => {
+        #[derive(
+            Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord,
+            serde::Serialize, serde::Deserialize
+        )]
+        pub struct $name(uuid::Uuid);
 
-    #[test]
-    fn it_works() {
-        let result = add(2, 2);
-        assert_eq!(result, 4);
-    }
+        impl $name {
+            pub fn new() -> Self {
+                Self(uuid::Uuid::now_v7())
+            }
+
+            pub fn from_string(value: &str) -> Self {
+                Self(uuid::Uuid::parse_str(value).unwrap())
+            }
+        }
+
+        impl Into<String> for $name {
+            fn into(self) -> String {
+                self.0.to_string()
+            }
+        }
+    };
 }

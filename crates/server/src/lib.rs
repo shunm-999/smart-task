@@ -1,3 +1,5 @@
+mod error;
+
 use openapi::model::task::{ApiTask, ApiTaskPriority, ApiTaskStatus};
 
 pub fn test() {

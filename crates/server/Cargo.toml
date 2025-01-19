@@ -7,6 +7,8 @@ repository.workspace = true
 
 [dependencies]
 openapi = { workspace = true }
+domain = { workspace = true }
 
-chrono = { workspace = true }
 actix-web = { workspace = true }
+chrono = { workspace = true }
+uuid = { workspace = true }
