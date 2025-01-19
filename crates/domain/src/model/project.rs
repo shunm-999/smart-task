@@ -10,3 +10,14 @@ data_model!(
     created_at: chrono::DateTime<chrono::Utc>,
     updated_at: chrono::DateTime<chrono::Utc>
 );
+
+pub struct ProjectCreation {
+    pub name: String,
+    pub description: String,
+}
+
+pub struct ProjectUpdating {
+    pub id: ProjectId,
+    pub name: Option<String>,
+    pub description: Option<String>,
+}

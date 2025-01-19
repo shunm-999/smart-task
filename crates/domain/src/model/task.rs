@@ -21,3 +21,24 @@ data_model!(
     created_at: chrono::DateTime<chrono::Utc>,
     updated_at: chrono::DateTime<chrono::Utc>
 );
+
+pub struct TaskCreation {
+    pub project_id: Option<ProjectId>,
+    pub title: String,
+    pub description: String,
+    pub status: TaskStatus,
+    pub priority: TaskPriority,
+    pub tags: Vec<Tag>,
+    pub deadline: Option<chrono::DateTime<chrono::Utc>>,
+}
+
+pub struct TaskUpdating {
+    pub id: TaskId,
+    pub project_id: Option<ProjectId>,
+    pub title: Option<String>,
+    pub description: Option<String>,
+    pub status: Option<TaskStatus>,
+    pub priority: Option<TaskPriority>,
+    pub tags: Option<Vec<Tag>>,
+    pub deadline: Option<Option<chrono::DateTime<chrono::Utc>>>,
+}

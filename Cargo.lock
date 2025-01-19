@@ -628,6 +628,7 @@ name = "domain"
 version = "0.1.0"
 dependencies = [
  "chrono",
+ "paste",
  "serde",
  "serde_json",
  "uuid",
