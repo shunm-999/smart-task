@@ -4,7 +4,7 @@ use crate::repository::DatabaseRepository;
 use domain::model::tag::{Tag, TagCreation, TagId, TagUpdating};
 use domain::repository::tag::TagRepository;
 use sea_orm::ActiveValue::Set;
-use sea_orm::{ActiveModelTrait, EntityTrait};
+use sea_orm::{ActiveModelTrait, EntityTrait, ModelTrait};
 
 impl TagRepository for DatabaseRepository {
     async fn get_tags(&self) -> domain::Result<Vec<Tag>> {
@@ -17,14 +17,15 @@ impl TagRepository for DatabaseRepository {
         tags.into_iter().map(|tag| Ok(tag.into())).collect()
     }
 
-    async fn get_tag(&self, tag_id: TagId) -> domain::Result<Option<Tag>> {
+    async fn get_tag(&self, tag_id: TagId) -> domain::Result<Tag> {
         let conn = self.database_connection_provider.get_connection();
         let tag = TagEntity::find_by_id(tag_id.to_string())
             .one(conn)
             .await
-            .map_err(|e| map_to_domain_error(e))?;
+            .map_err(|e| map_to_domain_error(e))?
+            .ok_or(domain::Error::NotFound)?;
 
-        Ok(tag.map(|tag| tag.into()))
+        Ok(tag.into())
     }
 
     async fn create_tag(&self, tag_creation: TagCreation) -> domain::Result<Tag> {
@@ -50,7 +51,19 @@ impl TagRepository for DatabaseRepository {
     }
 
     async fn delete_tag(&self, tag_id: TagId) -> domain::Result<Tag> {
-        todo!()
+        let conn = self.database_connection_provider.get_connection();
+        let tag = TagEntity::find_by_id(tag_id.to_string())
+            .one(conn)
+            .await
+            .map_err(|e| map_to_domain_error(e))?
+            .ok_or(domain::Error::NotFound)?;
+
+        tag.clone()
+            .delete(conn)
+            .await
+            .map_err(|e| map_to_domain_error(e))?;
+
+        Ok(tag.into())
     }
 }
 
