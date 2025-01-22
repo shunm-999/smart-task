@@ -1,3 +1,5 @@
+use std::fmt::Display;
+
 pub mod model;
 pub mod repository;
 
@@ -27,15 +29,29 @@ macro_rules! data_id {
             pub fn new() -> Self {
                 Self(uuid::Uuid::now_v7())
             }
+        }
 
-            pub fn from_string(value: &str) -> Self {
-                Self(uuid::Uuid::parse_str(value).unwrap())
+        impl Default for $name {
+            fn default() -> Self {
+                Self::new()
             }
         }
 
         impl Into<String> for $name {
             fn into(self) -> String {
                 self.0.to_string()
+            }
+        }
+
+        impl From<&String> for $name {
+            fn from(value: &String) -> Self {
+                Self(uuid::Uuid::parse_str(value).unwrap())
+            }
+        }
+
+        impl std::fmt::Display for $name {
+            fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+                write!(f, "{}", self.0)
             }
         }
     };

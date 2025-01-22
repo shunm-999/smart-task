@@ -1,8 +1,8 @@
-use crate::repository::SmartTaskRepository;
+use crate::repository::DatabaseRepository;
 use domain::model::task::{Task, TaskCreation, TaskId, TaskUpdating};
 use domain::repository::task::TaskRepository;
 
-impl TaskRepository for SmartTaskRepository {
+impl TaskRepository for DatabaseRepository {
     async fn get_tasks(&self) -> domain::Result<Vec<Task>> {
         todo!()
     }

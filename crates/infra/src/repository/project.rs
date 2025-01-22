@@ -1,8 +1,8 @@
-use crate::repository::SmartTaskRepository;
+use crate::repository::DatabaseRepository;
 use domain::model::project::{Project, ProjectCreation, ProjectId, ProjectUpdating};
 use domain::repository::project::ProjectRepository;
 
-impl ProjectRepository for SmartTaskRepository {
+impl ProjectRepository for DatabaseRepository {
     async fn get_projects(&self) -> domain::Result<Vec<Project>> {
         todo!()
     }

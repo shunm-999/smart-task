@@ -7,3 +7,5 @@ repository.workspace = true
 
 [dependencies]
 domain = { workspace = true }
+
+sea-orm = { workspace = true }
