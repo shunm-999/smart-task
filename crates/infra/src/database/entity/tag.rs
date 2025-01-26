@@ -17,21 +17,31 @@ pub struct Model {
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
 pub enum Relation {}
 
+impl Related<super::task::Entity> for Entity {
+    fn to() -> RelationDef {
+        super::tag_task::Relation::Task.def()
+    }
+
+    fn via() -> Option<RelationDef> {
+        Some(super::tag_task::Relation::Tag.def().rev())
+    }
+}
+
 impl ActiveModelBehavior for ActiveModel {}
 
-impl Into<Tag> for Model {
-    fn into(self) -> Tag {
+impl From<Model> for Tag {
+    fn from(value: Model) -> Self {
         let color = TagColor {
-            r: self.color_r as u8,
-            g: self.color_g as u8,
-            b: self.color_b as u8,
+            r: value.color_r as u8,
+            g: value.color_g as u8,
+            b: value.color_b as u8,
         };
-        Tag {
-            id: (&self.id).into(),
-            name: self.name,
+        Self {
+            id: (&value.id).into(),
+            name: value.name,
             color,
-            created_at: self.created_at.and_utc(),
-            updated_at: self.updated_at.and_utc(),
+            created_at: value.created_at.and_utc(),
+            updated_at: value.updated_at.and_utc(),
         }
     }
 }

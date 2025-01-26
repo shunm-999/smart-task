@@ -1,3 +1,4 @@
+use domain::model::task::Task;
 use sea_orm::entity::prelude::*;
 use sea_orm::prelude::DateTime;
 
@@ -6,6 +7,7 @@ use sea_orm::prelude::DateTime;
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
     pub id: String,
+    pub project_id: Option<String>,
     pub title: String,
     pub description: String,
     pub status: Status,
@@ -42,4 +44,58 @@ pub enum Priority {
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
 pub enum Relation {}
 
+impl Related<super::tag::Entity> for Entity {
+    fn to() -> RelationDef {
+        super::tag_task::Relation::Tag.def()
+    }
+
+    fn via() -> Option<RelationDef> {
+        Some(super::tag_task::Relation::Task.def().rev())
+    }
+}
+
 impl ActiveModelBehavior for ActiveModel {}
+
+pub struct TagTaskRelation(pub Model, pub Vec<super::tag::Model>);
+
+impl From<Status> for domain::model::task::TaskStatus {
+    fn from(value: Status) -> Self {
+        match value {
+            Status::Inbox => Self::Inbox,
+            Status::NextAction => Self::NextAction,
+            Status::Waiting => Self::Waiting,
+            Status::Done => Self::Done,
+        }
+    }
+}
+
+impl From<Priority> for domain::model::task::TaskPriority {
+    fn from(value: Priority) -> Self {
+        match value {
+            Priority::Low => Self::Low,
+            Priority::Medium => Self::Middle,
+            Priority::High => Self::High,
+        }
+    }
+}
+
+impl From<TagTaskRelation> for Task {
+    fn from(value: TagTaskRelation) -> Self {
+        let task = value.0;
+        let tags = value.1;
+        let tags = tags.into_iter().map(|tag| tag.into()).collect();
+
+        Self {
+            id: (&task.id).into(),
+            project_id: task.project_id.map(|id| (&id).into()),
+            title: task.title,
+            description: task.description,
+            status: task.status.into(),
+            priority: task.priority.into(),
+            tags,
+            deadline: task.deadline.map(|d| d.and_utc()),
+            created_at: task.created_at.and_utc(),
+            updated_at: task.updated_at.and_utc(),
+        }
+    }
+}
