@@ -52,11 +52,6 @@ impl Into<ErrorContext> for ErrorResponse {
                 message,
                 errors,
             },
-            Error::NotDeletableResource => ErrorContext {
-                error_type: ApiErrorType::NotDeletableResource,
-                message,
-                errors,
-            },
             Error::ServiseMaintenance => ErrorContext {
                 error_type: ApiErrorType::ServiseMaintenance,
                 message,

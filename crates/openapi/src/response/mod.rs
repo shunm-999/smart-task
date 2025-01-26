@@ -89,8 +89,6 @@ macro_rules! response_definition {
                     // 型エイリアスの定義
                     type ErrorContext = crate::model::error::ErrorContext;
                     type ApiErrorType = crate::model::error::ApiErrorType;
-                    type ProjectsList400ResponseAnyOf = smart_task_openapi_axum::models::ProjectsList400ResponseAnyOf;
-                    type ProjectsList400ResponseAnyOf1 = smart_task_openapi_axum::models::ProjectsList400ResponseAnyOf1;
                     type ProjectsList400Response = smart_task_openapi_axum::models::ProjectsList400Response;
                     type ProjectsList401Response = smart_task_openapi_axum::models::ProjectsList401Response;
                     type ProjectsList403Response = smart_task_openapi_axum::models::ProjectsList403Response;
@@ -109,14 +107,12 @@ macro_rules! response_definition {
                             let error: ErrorContext = error.into();
                             let res = match error.error_type {
                                 ApiErrorType::BadRequest => {
-                                    let res = ProjectsList400ResponseAnyOf::new(
+                                    let res = ProjectsList400Response::new(
                                         1f64,
                                         ApiErrorType::BadRequest.to_string(),
                                         error.message,
                                         error.errors,
                                     );
-                                    let res = serde_json::to_string(&res).unwrap();
-                                    let res = ProjectsList400Response::from_str(&res).unwrap();
                                     $inner::Status400_TheServerCouldNotUnderstandTheRequestDueToInvalidSyntax(res)
                                 }
                                 ApiErrorType::Unauthorized => {
@@ -163,17 +159,6 @@ macro_rules! response_definition {
                                         error.errors,
                                     );
                                     $inner::Status429_ClientError(res)
-                                }
-                                ApiErrorType::NotDeletableResource => {
-                                    let res = ProjectsList400ResponseAnyOf1::new(
-                                        7f64,
-                                        ApiErrorType::NotDeletableResource.to_string(),
-                                        error.message,
-                                        error.errors,
-                                    );
-                                    let res = serde_json::to_string(&res).unwrap();
-                                    let res = ProjectsList400Response::from_str(&res).unwrap();
-                                    $inner::Status400_TheServerCouldNotUnderstandTheRequestDueToInvalidSyntax(res)
                                 }
                                 ApiErrorType::ServiseMaintenance => {
                                     let res = ProjectsList503Response::new(

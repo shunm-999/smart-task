@@ -10,7 +10,6 @@ pub enum Error {
     NotFound,
     InternalServerError,
     TooManyRequests,
-    NotDeletableResource,
     ServiseMaintenance,
 }
 
