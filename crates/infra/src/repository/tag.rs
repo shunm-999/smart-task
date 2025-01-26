@@ -67,21 +67,21 @@ impl TagRepository for DatabaseRepository {
     }
 }
 
-impl Into<ActiveModel> for TagCreation {
-    fn into(self) -> ActiveModel {
+impl From<TagCreation> for ActiveModel {
+    fn from(tag_creation: TagCreation) -> Self {
         ActiveModel {
-            name: Set(self.name),
-            color_r: Set(self.color.r as i32),
-            color_g: Set(self.color.g as i32),
-            color_b: Set(self.color.b as i32),
+            id: Set(tag_creation.id.to_string()),
+            name: Set(tag_creation.name),
+            color_r: Set(tag_creation.color.r as i32),
+            color_g: Set(tag_creation.color.g as i32),
+            color_b: Set(tag_creation.color.b as i32),
             ..Default::default()
         }
     }
 }
 
-impl Into<ActiveModel> for (Model, TagUpdating) {
-    fn into(self) -> ActiveModel {
-        let (tag, tag_updating) = self;
+impl From<(Model, TagUpdating)> for ActiveModel {
+    fn from((tag, tag_updating): (Model, TagUpdating)) -> Self {
         let mut tag: ActiveModel = tag.into();
 
         if let Some(name) = tag_updating.name {

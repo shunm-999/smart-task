@@ -25,6 +25,7 @@ data_model!(
 );
 
 pub struct TagCreation {
+    pub id: TagId,
     pub name: String,
     pub color: TagColor,
 }

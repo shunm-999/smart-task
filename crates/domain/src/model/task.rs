@@ -23,6 +23,7 @@ data_model!(
 );
 
 pub struct TaskCreation {
+    pub id: TaskId,
     pub project_id: Option<ProjectId>,
     pub title: String,
     pub description: String,

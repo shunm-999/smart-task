@@ -1,4 +1,4 @@
-mod project;
+pub mod project;
 pub mod tag;
-mod tag_task;
-mod task;
+pub mod tag_task;
+pub mod task;

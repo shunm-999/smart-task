@@ -71,6 +71,12 @@ impl ActiveModelBehavior for ActiveModel {}
 
 pub struct TagTaskRelation(pub Model, pub Vec<super::tag::Model>);
 
+impl From<(Model, Vec<super::tag::Model>)> for TagTaskRelation {
+    fn from(value: (Model, Vec<crate::database::entity::tag::Model>)) -> Self {
+        Self(value.0, value.1)
+    }
+}
+
 impl From<Status> for domain::model::task::TaskStatus {
     fn from(value: Status) -> Self {
         match value {
