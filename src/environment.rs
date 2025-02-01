@@ -10,7 +10,7 @@ pub struct Environment {
 impl Default for Environment {
     fn default() -> Self {
         Environment {
-            server_host: "0.0.0.0".to_string(),
+            server_host: "127.0.0.1".to_string(),
             server_port: "8080".to_string(),
             database_url: "sqlite::memory:".to_string(),
         }
