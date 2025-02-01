@@ -18,22 +18,17 @@ use sea_orm::{
 
 impl TaskRepository for DatabaseRepository {
     async fn get_tasks(&self) -> domain::Result<Vec<Task>> {
-        let conn = self.database_connection_provider.get_connection();
-        let tasks = TaskEntity::find()
-            .all(conn)
-            .await
-            .map_err(|e| map_db_error_to_domain_error(e))?;
-        let tags = tasks
-            .load_many_to_many(TagEntity, TagTaskEntity, conn)
-            .await
-            .map_err(|e| map_db_error_to_domain_error(e))?;
-
-        let tasks: Vec<TagTaskRelation> = tasks
-            .into_iter()
-            .zip(tags)
-            .map(|(task, tags)| (task, tags).into())
-            .collect();
-        tasks.into_iter().map(|task| Ok(task.into())).collect()
+        let tasks = self
+            .database_connection_provider
+            .transaction::<_, Vec<Task>>(|txn| {
+                Box::pin(async move {
+                    let tasks: Vec<TagTaskRelation> = get_tag_task_relation(txn).await?;
+                    let tasks = tasks.into_iter().map(|task| task.into()).collect();
+                    Ok(tasks)
+                })
+            })
+            .await?;
+        Ok(tasks)
     }
 
     async fn get_task(&self, task_id: TaskId) -> domain::Result<Task> {
@@ -113,6 +108,24 @@ impl TaskRepository for DatabaseRepository {
             .map_err(|e| map_db_error_to_domain_error(e))?;
         Ok(task)
     }
+}
+
+async fn get_tag_task_relation(txn: &DatabaseTransaction) -> domain::Result<Vec<TagTaskRelation>> {
+    let tasks = TaskEntity::find()
+        .all(txn)
+        .await
+        .map_err(|e| map_db_error_to_domain_error(e))?;
+    let tags = tasks
+        .load_many_to_many(TagEntity, TagTaskEntity, txn)
+        .await
+        .map_err(|e| map_db_error_to_domain_error(e))?;
+
+    let tasks = tasks
+        .into_iter()
+        .zip(tags)
+        .map(|(task, tags)| (task, tags).into())
+        .collect();
+    Ok(tasks)
 }
 
 async fn get_tag_task_relation_one(
