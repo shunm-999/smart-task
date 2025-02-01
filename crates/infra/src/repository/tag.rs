@@ -44,7 +44,7 @@ impl TagRepository for DatabaseRepository {
             .map_err(|e| map_to_domain_error(e))?
             .ok_or(domain::Error::NotFound)?;
 
-        let tag: ActiveModel = tag.into();
+        let tag: ActiveModel = (tag, tag_updating).into();
         let tag = tag.update(conn).await.map_err(|e| map_to_domain_error(e))?;
 
         Ok(tag.into())
@@ -92,6 +92,7 @@ impl From<(Model, TagUpdating)> for ActiveModel {
             tag.color_g = Set(color.g as i32);
             tag.color_b = Set(color.b as i32);
         }
+        tag.updated_at = Set(chrono::Utc::now().naive_utc());
         tag
     }
 }

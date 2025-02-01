@@ -6,6 +6,6 @@ description.workspace = true
 repository.workspace = true
 
 [dependencies]
+chrono = { workspace = true }
 domain = { workspace = true }
-
 sea-orm = { workspace = true }

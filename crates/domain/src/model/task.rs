@@ -22,6 +22,7 @@ data_model!(
     updated_at: chrono::DateTime<chrono::Utc>
 );
 
+#[derive(Clone, Debug)]
 pub struct TaskCreation {
     pub id: TaskId,
     pub project_id: Option<ProjectId>,
@@ -33,9 +34,10 @@ pub struct TaskCreation {
     pub deadline: Option<chrono::DateTime<chrono::Utc>>,
 }
 
+#[derive(Clone, Debug)]
 pub struct TaskUpdating {
     pub id: TaskId,
-    pub project_id: Option<ProjectId>,
+    pub project_id: Option<Option<ProjectId>>,
     pub title: Option<String>,
     pub description: Option<String>,
     pub status: Option<TaskStatus>,
