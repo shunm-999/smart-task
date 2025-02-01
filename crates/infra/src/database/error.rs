@@ -1,7 +1,7 @@
 use domain::Error;
-use sea_orm::DbErr;
+use sea_orm::{DbErr, TransactionError};
 
-pub(crate) fn map_to_domain_error(error: DbErr) -> Error {
+pub(crate) fn map_db_error_to_domain_error(error: DbErr) -> Error {
     match error {
         DbErr::ConnectionAcquire(err) => Error::InternalServerError,
         DbErr::TryIntoErr { from, into, source } => Error::InternalServerError,
@@ -19,5 +19,12 @@ pub(crate) fn map_to_domain_error(error: DbErr) -> Error {
         DbErr::Migration(err) => Error::InternalServerError,
         DbErr::RecordNotInserted => Error::InternalServerError,
         DbErr::RecordNotUpdated => Error::InternalServerError,
+    }
+}
+
+pub(crate) fn map_db_transaction_error_to_domain_error(error: TransactionError<DbErr>) -> Error {
+    match error {
+        TransactionError::Connection(err) => map_db_error_to_domain_error(err),
+        TransactionError::Transaction(err) => map_db_error_to_domain_error(err),
     }
 }

@@ -1,5 +1,5 @@
 use crate::database::entity::tag::{ActiveModel, Entity as TagEntity, Model};
-use crate::database::error::map_to_domain_error;
+use crate::database::error::map_db_error_to_domain_error;
 use crate::repository::DatabaseRepository;
 use domain::model::tag::{Tag, TagCreation, TagId, TagUpdating};
 use domain::repository::tag::TagRepository;
@@ -12,7 +12,7 @@ impl TagRepository for DatabaseRepository {
         let tags = TagEntity::find()
             .all(conn)
             .await
-            .map_err(|e| map_to_domain_error(e))?;
+            .map_err(|e| map_db_error_to_domain_error(e))?;
 
         tags.into_iter().map(|tag| Ok(tag.into())).collect()
     }
@@ -22,7 +22,7 @@ impl TagRepository for DatabaseRepository {
         let tag = TagEntity::find_by_id(tag_id.to_string())
             .one(conn)
             .await
-            .map_err(|e| map_to_domain_error(e))?
+            .map_err(|e| map_db_error_to_domain_error(e))?
             .ok_or(domain::Error::NotFound)?;
 
         Ok(tag.into())
@@ -31,7 +31,10 @@ impl TagRepository for DatabaseRepository {
     async fn create_tag(&self, tag_creation: TagCreation) -> domain::Result<Tag> {
         let conn = self.database_connection_provider.get_connection();
         let tag: ActiveModel = tag_creation.into();
-        let tag = tag.insert(conn).await.map_err(|e| map_to_domain_error(e))?;
+        let tag = tag
+            .insert(conn)
+            .await
+            .map_err(|e| map_db_error_to_domain_error(e))?;
 
         Ok(tag.into())
     }
@@ -41,11 +44,14 @@ impl TagRepository for DatabaseRepository {
         let tag = TagEntity::find_by_id(tag_updating.id.to_string())
             .one(conn)
             .await
-            .map_err(|e| map_to_domain_error(e))?
+            .map_err(|e| map_db_error_to_domain_error(e))?
             .ok_or(domain::Error::NotFound)?;
 
         let tag: ActiveModel = (tag, tag_updating).into();
-        let tag = tag.update(conn).await.map_err(|e| map_to_domain_error(e))?;
+        let tag = tag
+            .update(conn)
+            .await
+            .map_err(|e| map_db_error_to_domain_error(e))?;
 
         Ok(tag.into())
     }
@@ -55,13 +61,13 @@ impl TagRepository for DatabaseRepository {
         let tag = TagEntity::find_by_id(tag_id.to_string())
             .one(conn)
             .await
-            .map_err(|e| map_to_domain_error(e))?
+            .map_err(|e| map_db_error_to_domain_error(e))?
             .ok_or(domain::Error::NotFound)?;
 
         tag.clone()
             .delete(conn)
             .await
-            .map_err(|e| map_to_domain_error(e))?;
+            .map_err(|e| map_db_error_to_domain_error(e))?;
 
         Ok(tag.into())
     }

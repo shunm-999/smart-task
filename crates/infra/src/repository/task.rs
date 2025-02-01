@@ -4,14 +4,17 @@ use crate::database::entity::tag_task::Entity as TagTaskEntity;
 use crate::database::entity::task::{
     ActiveModel, Entity as TaskEntity, Model, Priority, Status, TagTaskRelation,
 };
-use crate::database::error::map_to_domain_error;
+use crate::database::error::map_db_error_to_domain_error;
 use crate::repository::DatabaseRepository;
 use domain::model::tag::TagId;
 use domain::model::task::{Task, TaskCreation, TaskId, TaskPriority, TaskStatus, TaskUpdating};
 use domain::repository::task::TaskRepository;
+use domain::Error;
 use sea_orm::entity::prelude::*;
 use sea_orm::ActiveValue::Set;
-use sea_orm::{ActiveModelTrait, DatabaseConnection, EntityTrait, LoaderTrait, NotSet};
+use sea_orm::{
+    ActiveModelTrait, DatabaseTransaction, EntityTrait, LoaderTrait, NotSet, TransactionTrait,
+};
 
 impl TaskRepository for DatabaseRepository {
     async fn get_tasks(&self) -> domain::Result<Vec<Task>> {
@@ -19,11 +22,11 @@ impl TaskRepository for DatabaseRepository {
         let tasks = TaskEntity::find()
             .all(conn)
             .await
-            .map_err(|e| map_to_domain_error(e))?;
+            .map_err(|e| map_db_error_to_domain_error(e))?;
         let tags = tasks
             .load_many_to_many(TagEntity, TagTaskEntity, conn)
             .await
-            .map_err(|e| map_to_domain_error(e))?;
+            .map_err(|e| map_db_error_to_domain_error(e))?;
 
         let tasks: Vec<TagTaskRelation> = tasks
             .into_iter()
@@ -34,84 +37,103 @@ impl TaskRepository for DatabaseRepository {
     }
 
     async fn get_task(&self, task_id: TaskId) -> domain::Result<Task> {
-        let conn = self.database_connection_provider.get_connection();
-        let tasks: TagTaskRelation = self.get_tag_task_relation_one(conn, task_id).await?;
-        Ok(tasks.into())
+        let task = self
+            .database_connection_provider
+            .transaction::<_, Task>(|txn| {
+                Box::pin(async move {
+                    let task: TagTaskRelation = get_tag_task_relation_one(txn, task_id).await?;
+                    Ok(task.into())
+                })
+            })
+            .await?;
+        Ok(task)
     }
 
     async fn create_task(&self, task_creation: TaskCreation) -> domain::Result<Task> {
-        let conn = self.database_connection_provider.get_connection();
-        let task: ActiveModel = task_creation.clone().into();
-        task.insert(conn)
-            .await
-            .map_err(|e| map_to_domain_error(e))?;
-        let task: TagTaskRelation = self
-            .get_tag_task_relation_one(conn, task_creation.id)
+        let task = self
+            .database_connection_provider
+            .transaction::<_, Task>(|txn| {
+                Box::pin(async move {
+                    let task: ActiveModel = task_creation.clone().into();
+                    task.insert(txn)
+                        .await
+                        .map_err(|e| map_db_error_to_domain_error(e))?;
+                    let task: TagTaskRelation =
+                        get_tag_task_relation_one(txn, task_creation.id).await?;
+                    Ok(task.into())
+                })
+            })
             .await?;
-        Ok(task.into())
+        Ok(task)
     }
 
     async fn update_task(&self, task_updating: TaskUpdating) -> domain::Result<Task> {
-        let conn = self.database_connection_provider.get_connection();
-        let task = TaskEntity::find_by_id(task_updating.clone().id.to_string())
-            .one(conn)
-            .await
-            .map_err(|e| map_to_domain_error(e))?
-            .ok_or(domain::Error::NotFound)?;
+        let task = self
+            .database_connection_provider
+            .transaction::<_, Task>(|txn| {
+                Box::pin(async move {
+                    let task: TagTaskRelation =
+                        get_tag_task_relation_one(txn, task_updating.id).await?;
+                    let task: ActiveModel = (task.0, task_updating.clone()).into();
+                    task.update(txn)
+                        .await
+                        .map_err(|e| map_db_error_to_domain_error(e))?;
 
-        let task: ActiveModel = (task, task_updating.clone()).into();
-        task.update(conn)
-            .await
-            .map_err(|e| map_to_domain_error(e))?;
+                    if let Some(update_tags) = task_updating.tags {
+                        TagTaskEntity::delete_many()
+                            .filter(tag_task::Column::TaskId.eq(task_updating.id.to_string()))
+                            .exec(txn)
+                            .await
+                            .map_err(|e| map_db_error_to_domain_error(e))?;
 
-        if let Some(update_tags) = task_updating.tags {
-            TagTaskEntity::delete_many()
-                .filter(tag_task::Column::TaskId.eq(task_updating.id.to_string()))
-                .exec(conn)
-                .await
-                .map_err(|e| map_to_domain_error(e))?;
+                        let update_tags: Vec<tag_task::ActiveModel> = update_tags
+                            .into_iter()
+                            .map(|tag| (task_updating.id, tag.id).into())
+                            .collect();
+                        TagTaskEntity::insert_many(update_tags)
+                            .exec(txn)
+                            .await
+                            .map_err(|e| map_db_error_to_domain_error(e))?;
+                    }
 
-            let update_tags: Vec<tag_task::ActiveModel> = update_tags
-                .into_iter()
-                .map(|tag| (task_updating.id, tag.id).into())
-                .collect();
-            TagTaskEntity::insert_many(update_tags)
-                .exec(conn)
-                .await
-                .map_err(|e| map_to_domain_error(e))?;
-        }
-
-        let tasks: TagTaskRelation = self.get_tag_task_relation_one(conn, task_updating.id).await?;
-        Ok(tasks.into())
+                    let tasks: TagTaskRelation =
+                        get_tag_task_relation_one(txn, task_updating.id).await?;
+                    Ok(tasks.into())
+                })
+            })
+            .await?;
+        Ok(task)
     }
 
     async fn delete_task(&self, task_id: TaskId) -> domain::Result<Task> {
-        todo!()
+        let task = self.get_task(task_id.clone()).await?;
+        TaskEntity::delete_by_id(task_id.to_string())
+            .exec(self.database_connection_provider.get_connection())
+            .await
+            .map_err(|e| map_db_error_to_domain_error(e))?;
+        Ok(task)
     }
 }
 
-impl DatabaseRepository {
-    async fn get_tag_task_relation_one(
-        &self,
-        conn: &DatabaseConnection,
-        task_id: TaskId,
-    ) -> domain::Result<TagTaskRelation> {
-        let task = TaskEntity::find_by_id(task_id.to_string())
-            .one(conn)
-            .await
-            .map_err(|e| map_to_domain_error(e))?
-            .ok_or(domain::Error::NotFound)?;
+async fn get_tag_task_relation_one(
+    txn: &DatabaseTransaction,
+    task_id: TaskId,
+) -> domain::Result<TagTaskRelation> {
+    let task = TaskEntity::find_by_id(task_id.to_string())
+        .one(txn)
+        .await
+        .map_err(|e| map_db_error_to_domain_error(e))?
+        .ok_or(Error::NotFound)?;
 
-        let tags = vec![task.clone()]
-            .load_many_to_many(TagEntity, TagTaskEntity, conn)
-            .await
-            .map_err(|e| map_to_domain_error(e))?
-            .first()
-            .cloned()
-            .unwrap_or_else(|| vec![]);
+    let tags = vec![task.clone()]
+        .load_many_to_many(TagEntity, TagTaskEntity, txn)
+        .await
+        .map_err(|e| map_db_error_to_domain_error(e))?
+        .first()
+        .cloned()
+        .unwrap_or_else(|| vec![]);
 
-        Ok((task, tags).into())
-    }
+    Ok((task, tags).into())
 }
 
 impl From<TaskStatus> for Status {
