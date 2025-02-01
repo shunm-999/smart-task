@@ -2346,6 +2346,7 @@ dependencies = [
  "actix-web",
  "chrono",
  "domain",
+ "infra",
  "openapi",
  "uuid",
 ]
@@ -2426,6 +2427,9 @@ name = "smart-task"
 version = "0.1.0"
 dependencies = [
  "actix-web",
+ "infra",
+ "sea-orm",
+ "tokio",
 ]
 
 [[package]]

@@ -1,12 +1,12 @@
 use crate::database::entity::tag::{ActiveModel, Entity as TagEntity, Model};
 use crate::database::error::map_db_error_to_domain_error;
-use crate::repository::DatabaseRepository;
+use crate::SmartTaskRepositoryImpl;
 use domain::model::tag::{Tag, TagCreation, TagId, TagUpdating};
 use domain::repository::tag::TagRepository;
 use sea_orm::ActiveValue::Set;
 use sea_orm::{ActiveModelTrait, EntityTrait, ModelTrait};
 
-impl TagRepository for DatabaseRepository {
+impl TagRepository for SmartTaskRepositoryImpl {
     async fn get_tags(&self) -> domain::Result<Vec<Tag>> {
         let conn = self.database_connection_provider.get_connection();
         let tags = TagEntity::find()

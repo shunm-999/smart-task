@@ -5,7 +5,7 @@ use crate::database::entity::task::{
     ActiveModel, Entity as TaskEntity, Model, Priority, Status, TagTaskRelation,
 };
 use crate::database::error::map_db_error_to_domain_error;
-use crate::repository::DatabaseRepository;
+use crate::SmartTaskRepositoryImpl;
 use domain::model::tag::TagId;
 use domain::model::task::{Task, TaskCreation, TaskId, TaskPriority, TaskStatus, TaskUpdating};
 use domain::repository::task::TaskRepository;
@@ -16,7 +16,7 @@ use sea_orm::{
     ActiveModelTrait, DatabaseTransaction, EntityTrait, LoaderTrait, NotSet, TransactionTrait,
 };
 
-impl TaskRepository for DatabaseRepository {
+impl TaskRepository for SmartTaskRepositoryImpl {
     async fn get_tasks(&self) -> domain::Result<Vec<Task>> {
         let tasks = self
             .database_connection_provider

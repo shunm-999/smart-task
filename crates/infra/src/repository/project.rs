@@ -1,12 +1,12 @@
 use crate::database::entity::project::{ActiveModel, Entity as ProjectEntity, Model};
 use crate::database::error::map_db_error_to_domain_error;
-use crate::repository::DatabaseRepository;
+use crate::SmartTaskRepositoryImpl;
 use domain::model::project::{Project, ProjectCreation, ProjectId, ProjectUpdating};
 use domain::repository::project::ProjectRepository;
 use sea_orm::ActiveValue::Set;
 use sea_orm::{ActiveModelTrait, EntityTrait, ModelTrait};
 
-impl ProjectRepository for DatabaseRepository {
+impl ProjectRepository for SmartTaskRepositoryImpl {
     async fn get_projects(&self) -> domain::Result<Vec<Project>> {
         let conn = self.database_connection_provider.get_connection();
         let projects = ProjectEntity::find()

@@ -1,17 +1,21 @@
+use crate::database::connection_provider::DatabaseConnectionProvider;
+use domain::repository::SmartTaskRepository;
+
 mod database;
 mod repository;
 
-pub fn add(left: u64, right: u64) -> u64 {
-    left + right
+#[derive(Clone)]
+pub struct SmartTaskRepositoryImpl {
+    database_connection_provider: DatabaseConnectionProvider,
 }
 
-#[cfg(test)]
-mod tests {
-    use super::*;
+impl SmartTaskRepository for SmartTaskRepositoryImpl {}
 
-    #[test]
-    fn it_works() {
-        let result = add(2, 2);
-        assert_eq!(result, 4);
+impl SmartTaskRepositoryImpl {
+    pub async fn new(db_url: String) -> Self {
+        let database_connection_provider = DatabaseConnectionProvider::new(db_url).await;
+        Self {
+            database_connection_provider,
+        }
     }
 }

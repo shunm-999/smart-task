@@ -3,6 +3,7 @@ use sea_orm::{Database, DatabaseConnection, DatabaseTransaction, TransactionTrai
 use std::future::Future;
 use std::pin::Pin;
 
+#[derive(Clone)]
 pub(crate) struct DatabaseConnectionProvider {
     conn: DatabaseConnection,
 }
