@@ -1,3 +1,4 @@
+use domain::model::project::Project;
 use sea_orm::entity::prelude::*;
 use sea_orm::prelude::DateTime;
 
@@ -25,3 +26,15 @@ impl Related<super::task::Entity> for Entity {
 }
 
 impl ActiveModelBehavior for ActiveModel {}
+
+impl From<Model> for Project {
+    fn from(value: Model) -> Self {
+        Self {
+            id: (&value.id).into(),
+            name: value.name,
+            description: value.description,
+            created_at: value.created_at.and_utc(),
+            updated_at: value.updated_at.and_utc(),
+        }
+    }
+}

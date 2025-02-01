@@ -12,6 +12,7 @@ data_model!(
 );
 
 pub struct ProjectCreation {
+    pub id: ProjectId,
     pub name: String,
     pub description: String,
 }
