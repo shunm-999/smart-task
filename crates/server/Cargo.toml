@@ -13,3 +13,4 @@ infra = { workspace = true }
 actix-web = { workspace = true }
 chrono = { workspace = true }
 uuid = { workspace = true }
+log = "0.4.25"

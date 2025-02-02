@@ -82,12 +82,12 @@ macro_rules! response_definition {
             }
 
             // MapTo$name トレイトの実装
-            impl<T: Into<$entity>, E: Into<crate::model::error::ErrorContext>> $map_trait for Result<T, E> {
+            impl<T: Into<$entity>, E: Into<crate::model::error::ApiErrorContext>> $map_trait for Result<T, E> {
                 fn map_to_response(self) -> actix_web::HttpResponse {
                     use std::str::FromStr;
 
                     // 型エイリアスの定義
-                    type ErrorContext = crate::model::error::ErrorContext;
+                    type ErrorContext = crate::model::error::ApiErrorContext;
                     type ApiErrorType = crate::model::error::ApiErrorType;
                     type ProjectsList400Response = smart_task_openapi_axum::models::ProjectsList400Response;
                     type ProjectsList401Response = smart_task_openapi_axum::models::ProjectsList401Response;
@@ -176,7 +176,7 @@ macro_rules! response_definition {
                 }
             }
 
-        pub fn $map_function<T: Into<$entity>, E: Into<crate::model::error::ErrorContext>>(
+        pub fn $map_function<T: Into<$entity>, E: Into<crate::model::error::ApiErrorContext>>(
             result: Result<T, E>,
         ) -> actix_web::HttpResponse {
             $map_trait::map_to_response(result)

@@ -15,6 +15,12 @@ impl Default for TagColor {
     }
 }
 
+impl From<TagColor> for i32 {
+    fn from(color: TagColor) -> Self {
+        i32::from(color.r) << 16 | i32::from(color.g) << 8 | i32::from(color.b)
+    }
+}
+
 data_model!(
     Tag,
     id: TagId,

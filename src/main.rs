@@ -2,7 +2,7 @@ use crate::environment::{load_env, Environment};
 use actix_web::web::Data;
 use actix_web::{App, HttpServer};
 use infra::SmartTaskRepositoryImpl;
-use server::SmartTaskServer;
+use server::AppData;
 use std::sync::Arc;
 
 mod environment;
@@ -14,14 +14,14 @@ async fn main() {
 }
 async fn start_server(env: Environment) {
     let repository = SmartTaskRepositoryImpl::new(env.database_url()).await;
-    let server = SmartTaskServer {
+    let app_data = Data::new(AppData {
         repository: Arc::new(repository),
-    };
+    });
 
     let socket_addr = env.server_url();
 
     HttpServer::new(move || {
-        let app = App::new().app_data(Data::new(server.clone()));
+        let app = App::new().app_data(app_data.clone());
         app.configure(|cfg| {
             server::endpoint::config(cfg);
         })

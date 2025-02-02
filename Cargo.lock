@@ -2348,6 +2348,7 @@ dependencies = [
  "chrono",
  "domain",
  "infra",
+ "log",
  "openapi",
  "uuid",
 ]

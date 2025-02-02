@@ -2,10 +2,10 @@ use domain::repository::SmartTaskRepository;
 use infra::SmartTaskRepositoryImpl;
 use std::sync::Arc;
 
+mod dto;
 pub mod endpoint;
-mod error;
 
 #[derive(Clone)]
-pub struct SmartTaskServer {
+pub struct AppData {
     pub repository: Arc<SmartTaskRepositoryImpl>,
 }
