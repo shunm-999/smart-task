@@ -1,4 +1,5 @@
 mod tag;
+mod task;
 
 use actix_web::web;
 

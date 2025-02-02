@@ -164,7 +164,7 @@ impl From<TaskPriority> for Priority {
     fn from(value: TaskPriority) -> Self {
         match value {
             TaskPriority::Low => Self::Low,
-            TaskPriority::Middle => Self::Medium,
+            TaskPriority::Medium => Self::Medium,
             TaskPriority::High => Self::High,
         }
     }

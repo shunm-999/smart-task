@@ -4,7 +4,7 @@ use crate::{data_enum, data_id, data_model};
 
 data_id!(TaskId);
 
-data_enum!(TaskPriority, High, Middle, Low);
+data_enum!(TaskPriority, High, Medium, Low);
 
 data_enum!(TaskStatus, Inbox, NextAction, Waiting, Done);
 

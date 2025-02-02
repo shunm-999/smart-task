@@ -15,6 +15,18 @@ impl MapToApiModel<ApiTag> for Tag {
     }
 }
 
+impl MapToDomain<Tag> for ApiTag {
+    fn map_to_domain(self) -> Tag {
+        Tag {
+            id: (&self.id).into(),
+            name: self.name,
+            color: self.color.into(),
+            created_at: self.created_at,
+            updated_at: self.updated_at,
+        }
+    }
+}
+
 impl MapToDomain<TagCreation> for ApiTagCreateBody {
     fn map_to_domain(self) -> TagCreation {
         TagCreation {

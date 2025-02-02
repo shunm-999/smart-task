@@ -92,7 +92,7 @@ impl From<Priority> for domain::model::task::TaskPriority {
     fn from(value: Priority) -> Self {
         match value {
             Priority::Low => Self::Low,
-            Priority::Medium => Self::Middle,
+            Priority::Medium => Self::Medium,
             Priority::High => Self::High,
         }
     }

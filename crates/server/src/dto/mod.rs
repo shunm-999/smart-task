@@ -2,6 +2,7 @@ use openapi::model::error::ApiErrorContext;
 
 pub mod error;
 pub mod tag;
+mod task;
 
 pub(crate) trait MapToApiModel<T> {
     fn map_to_api_model(self) -> T;
