@@ -5,10 +5,12 @@ use smart_task_openapi_axum::models::{
 
 pub type ApiProjectsListQueryParams = ProjectsListQueryParams;
 
-pub type ApiProjectsGetPathParams = ProjectsGetPathParams;
+pub type ApiProjectGetPathParams = ProjectsGetPathParams;
 
-pub type ApiProjectsUpdatePathParams = ProjectsUpdatePathParams;
+pub type ApiProjectUpdatePathParams = ProjectsUpdatePathParams;
 
-pub type ApiProjectsDeletePathParams = ProjectsDeletePathParams;
+pub type ApiProjectDeletePathParams = ProjectsDeletePathParams;
 
-pub type ApiProjectsCreateBody = RequestsPeriodTaskPeriodCreate;
+pub type ApiProjectCreateBody = RequestsPeriodTaskPeriodCreate;
+
+pub type ApiProjectUpdateBody = RequestsPeriodTaskPeriodCreate;

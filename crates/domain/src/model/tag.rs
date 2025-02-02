@@ -21,6 +21,16 @@ impl From<TagColor> for i32 {
     }
 }
 
+impl From<i32> for TagColor {
+    fn from(value: i32) -> Self {
+        TagColor {
+            r: (value >> 16 & 0xFF) as u8,
+            g: (value >> 8 & 0xFF) as u8,
+            b: (value & 0xFF) as u8,
+        }
+    }
+}
+
 data_model!(
     Tag,
     id: TagId,

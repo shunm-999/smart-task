@@ -1,14 +1,16 @@
 use smart_task_openapi_axum::models::{
-    RequestsPeriodTagPeriodCreate, TagsDeletePathParams, TagsGetPathParams, TagsListQueryParams,
-    TagsUpdatePathParams,
+    RequestsPeriodTagPeriodCreate, RequestsPeriodTagPeriodUpdate, TagsDeletePathParams,
+    TagsGetPathParams, TagsListQueryParams, TagsUpdatePathParams,
 };
 
 pub type ApiTagsListQueryParams = TagsListQueryParams;
 
-pub type ApiTagsGetPathParams = TagsGetPathParams;
+pub type ApiTagGetPathParams = TagsGetPathParams;
 
-pub type ApiTagsUpdatePathParams = TagsUpdatePathParams;
+pub type ApiTagUpdatePathParams = TagsUpdatePathParams;
 
-pub type ApiTagsDeletePathParams = TagsDeletePathParams;
+pub type ApiTagDeletePathParams = TagsDeletePathParams;
 
-pub type ApiTagsCreateBody = RequestsPeriodTagPeriodCreate;
+pub type ApiTagCreateBody = RequestsPeriodTagPeriodCreate;
+
+pub type ApiTagUpdateBody = RequestsPeriodTagPeriodUpdate;
