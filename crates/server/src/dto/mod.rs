@@ -1,6 +1,7 @@
 use openapi::model::error::ApiErrorContext;
 
 pub mod error;
+mod project;
 pub mod tag;
 pub mod task;
 

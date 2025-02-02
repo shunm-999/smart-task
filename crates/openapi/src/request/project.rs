@@ -1,6 +1,6 @@
 use smart_task_openapi_axum::models::{
     ProjectsDeletePathParams, ProjectsGetPathParams, ProjectsListQueryParams,
-    ProjectsUpdatePathParams, RequestsPeriodTaskPeriodCreate,
+    ProjectsUpdatePathParams, RequestsPeriodProjectPeriodCreate, RequestsPeriodProjectPeriodUpdate,
 };
 
 pub type ApiProjectsListQueryParams = ProjectsListQueryParams;
@@ -11,6 +11,6 @@ pub type ApiProjectUpdatePathParams = ProjectsUpdatePathParams;
 
 pub type ApiProjectDeletePathParams = ProjectsDeletePathParams;
 
-pub type ApiProjectCreateBody = RequestsPeriodTaskPeriodCreate;
+pub type ApiProjectCreateBody = RequestsPeriodProjectPeriodCreate;
 
-pub type ApiProjectUpdateBody = RequestsPeriodTaskPeriodCreate;
+pub type ApiProjectUpdateBody = RequestsPeriodProjectPeriodUpdate;

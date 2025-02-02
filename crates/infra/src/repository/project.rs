@@ -20,14 +20,15 @@ impl ProjectRepository for SmartTaskRepositoryImpl {
             .collect()
     }
 
-    async fn get_project(&self, project_id: ProjectId) -> domain::Result<Option<Project>> {
+    async fn get_project(&self, project_id: ProjectId) -> domain::Result<Project> {
         let conn = self.database_connection_provider.get_connection();
         let project = ProjectEntity::find_by_id(project_id.to_string())
             .one(conn)
             .await
-            .map_err(|e| map_db_error_to_domain_error(e))?;
+            .map_err(|e| map_db_error_to_domain_error(e))?
+            .ok_or(domain::Error::NotFound)?;
 
-        Ok(project.map(|project| project.into()))
+        Ok(project.into())
     }
 
     async fn create_project(&self, project_creation: ProjectCreation) -> domain::Result<Project> {
