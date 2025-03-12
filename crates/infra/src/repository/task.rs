@@ -171,6 +171,7 @@ impl From<TaskPriority> for Priority {
 
 impl From<TaskCreation> for ActiveModel {
     fn from(value: TaskCreation) -> Self {
+        let now = chrono::Utc::now().naive_utc();
         ActiveModel {
             id: Set(*value.id.as_ref()),
             project_id: Set(value.project_id.map(|id| *id.as_ref())),
@@ -179,7 +180,8 @@ impl From<TaskCreation> for ActiveModel {
             status: Set(value.status.into()),
             priority: Set(value.priority.into()),
             deadline: Set(value.deadline.map(|d| d.naive_utc())),
-            ..Default::default()
+            created_at: Set(now),
+            updated_at: Set(now),
         }
     }
 }

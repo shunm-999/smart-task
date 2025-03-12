@@ -75,13 +75,15 @@ impl TagRepository for SmartTaskRepositoryImpl {
 
 impl From<TagCreation> for ActiveModel {
     fn from(tag_creation: TagCreation) -> Self {
+        let now = chrono::Utc::now().naive_utc();
         ActiveModel {
             id: Set(*tag_creation.id.as_ref()),
             name: Set(tag_creation.name),
             color_r: Set(tag_creation.color.r as i32),
             color_g: Set(tag_creation.color.g as i32),
             color_b: Set(tag_creation.color.b as i32),
-            ..Default::default()
+            created_at: Set(now),
+            updated_at: Set(now),
         }
     }
 }

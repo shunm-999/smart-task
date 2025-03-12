@@ -79,11 +79,13 @@ impl ProjectRepository for SmartTaskRepositoryImpl {
 
 impl From<ProjectCreation> for ActiveModel {
     fn from(value: ProjectCreation) -> Self {
+        let now = chrono::Utc::now().naive_utc();
         ActiveModel {
             id: Set(*value.id.as_ref()),
             name: Set(value.name),
             description: Set(value.description),
-            ..Default::default()
+            created_at: Set(now),
+            updated_at: Set(now),
         }
     }
 }
