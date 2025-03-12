@@ -6,7 +6,7 @@ data_id!(TaskId);
 
 data_enum!(TaskPriority, High, Medium, Low);
 
-data_enum!(TaskStatus, Inbox, NextAction, Waiting, Done);
+data_enum!(TaskStatus, Todo, InProgress, Done);
 
 data_model!(
     Task,

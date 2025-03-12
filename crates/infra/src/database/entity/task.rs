@@ -21,12 +21,10 @@ pub struct Model {
 #[sea_orm(rs_type = "i32", db_type = "Integer")]
 pub enum Status {
     #[sea_orm(num_value = 0)]
-    Inbox,
+    Todo,
     #[sea_orm(num_value = 1)]
-    NextAction,
+    InProgress,
     #[sea_orm(num_value = 2)]
-    Waiting,
-    #[sea_orm(num_value = 3)]
     Done,
 }
 
@@ -80,9 +78,8 @@ impl From<(Model, Vec<super::tag::Model>)> for TagTaskRelation {
 impl From<Status> for domain::model::task::TaskStatus {
     fn from(value: Status) -> Self {
         match value {
-            Status::Inbox => Self::Inbox,
-            Status::NextAction => Self::NextAction,
-            Status::Waiting => Self::Waiting,
+            Status::Todo => Self::Todo,
+            Status::InProgress => Self::InProgress,
             Status::Done => Self::Done,
         }
     }

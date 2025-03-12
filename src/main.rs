@@ -18,15 +18,13 @@ async fn start_server(env: Environment) {
         repository: Arc::new(repository),
     });
 
-    let socket_addr = env.server_url();
-
     HttpServer::new(move || {
         let app = App::new().app_data(app_data.clone());
         app.configure(|cfg| {
             server::endpoint::config(cfg);
         })
     })
-    .bind(socket_addr)
+    .bind(env.server_url())
     .expect("Failed to bind to socket address")
     .run()
     .await

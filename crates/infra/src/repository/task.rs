@@ -152,9 +152,8 @@ async fn get_tag_task_relation_one(
 impl From<TaskStatus> for Status {
     fn from(value: TaskStatus) -> Self {
         match value {
-            TaskStatus::Inbox => Self::Inbox,
-            TaskStatus::NextAction => Self::NextAction,
-            TaskStatus::Waiting => Self::Waiting,
+            TaskStatus::Todo => Self::Todo,
+            TaskStatus::InProgress => Self::InProgress,
             TaskStatus::Done => Self::Done,
         }
     }

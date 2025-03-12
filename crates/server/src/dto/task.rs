@@ -27,9 +27,8 @@ impl MapToApiModel<ApiTask> for Task {
 impl MapToApiModel<ApiTaskStatus> for TaskStatus {
     fn map_to_api_model(self) -> ApiTaskStatus {
         match self {
-            TaskStatus::Inbox => ApiTaskStatus::Inbox,
-            TaskStatus::NextAction => ApiTaskStatus::NextAction,
-            TaskStatus::Waiting => ApiTaskStatus::Waiting,
+            TaskStatus::Todo => ApiTaskStatus::Todo,
+            TaskStatus::InProgress => ApiTaskStatus::InProgress,
             TaskStatus::Done => ApiTaskStatus::Done,
         }
     }
@@ -52,7 +51,7 @@ impl MapToDomain<TaskCreation> for ApiTaskCreateBody {
             project_id: None,
             title: self.title,
             description: self.description,
-            status: TaskStatus::Inbox,
+            status: TaskStatus::Todo,
             priority: TaskPriority::Medium,
             tags: vec![],
             deadline: self.deadline,
@@ -81,9 +80,8 @@ impl MapToDomain<TaskUpdating> for (String, ApiTaskUpdateBody) {
 impl MapToDomain<TaskStatus> for ApiTaskStatus {
     fn map_to_domain(self) -> TaskStatus {
         match self {
-            ApiTaskStatus::Inbox => TaskStatus::Inbox,
-            ApiTaskStatus::NextAction => TaskStatus::NextAction,
-            ApiTaskStatus::Waiting => TaskStatus::Waiting,
+            ApiTaskStatus::Todo => TaskStatus::Todo,
+            ApiTaskStatus::InProgress => TaskStatus::InProgress,
             ApiTaskStatus::Done => TaskStatus::Done,
         }
     }
