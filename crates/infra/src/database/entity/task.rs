@@ -1,13 +1,14 @@
 use domain::model::task::Task;
 use sea_orm::entity::prelude::*;
 use sea_orm::prelude::DateTime;
+use uuid::Uuid;
 
 #[derive(Clone, Debug, PartialEq, Eq, DeriveEntityModel)]
 #[sea_orm(table_name = "task", rename_all = "camelCase")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
-    pub id: String,
-    pub project_id: Option<String>,
+    pub id: Uuid,
+    pub project_id: Option<Uuid>,
     pub title: String,
     pub description: String,
     pub status: Status,

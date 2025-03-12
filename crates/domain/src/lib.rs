@@ -1,4 +1,5 @@
 use std::fmt::Display;
+use uuid::Uuid;
 
 pub mod model;
 pub mod repository;
@@ -45,6 +46,18 @@ macro_rules! data_id {
         impl From<&String> for $name {
             fn from(value: &String) -> Self {
                 Self(uuid::Uuid::parse_str(value).unwrap())
+            }
+        }
+
+        impl From<&uuid::Uuid> for $name {
+            fn from(value: &uuid::Uuid) -> Self {
+                Self(*value)
+            }
+        }
+
+        impl AsRef<uuid::Uuid> for $name {
+            fn as_ref(&self) -> &uuid::Uuid {
+                &self.0
             }
         }
 

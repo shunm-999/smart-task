@@ -102,7 +102,7 @@ impl TaskRepository for SmartTaskRepositoryImpl {
 
     async fn delete_task(&self, task_id: TaskId) -> domain::Result<Task> {
         let task = self.get_task(task_id.clone()).await?;
-        TaskEntity::delete_by_id(task_id.to_string())
+        TaskEntity::delete_by_id(*task_id.as_ref())
             .exec(self.database_connection_provider.get_connection())
             .await
             .map_err(|e| map_db_error_to_domain_error(e))?;
@@ -132,7 +132,7 @@ async fn get_tag_task_relation_one(
     txn: &DatabaseTransaction,
     task_id: TaskId,
 ) -> domain::Result<TagTaskRelation> {
-    let task = TaskEntity::find_by_id(task_id.to_string())
+    let task = TaskEntity::find_by_id(*task_id.as_ref())
         .one(txn)
         .await
         .map_err(|e| map_db_error_to_domain_error(e))?
@@ -172,8 +172,8 @@ impl From<TaskPriority> for Priority {
 impl From<TaskCreation> for ActiveModel {
     fn from(value: TaskCreation) -> Self {
         ActiveModel {
-            id: Set(value.id.to_string()),
-            project_id: Set(value.project_id.map(|id| id.to_string())),
+            id: Set(*value.id.as_ref()),
+            project_id: Set(value.project_id.map(|id| *id.as_ref())),
             title: Set(value.title),
             description: Set(value.description),
             status: Set(value.status.into()),
@@ -191,7 +191,7 @@ impl From<(Model, TaskUpdating)> for ActiveModel {
         if let Some(project_id) = updating.project_id {
             task.project_id = match project_id {
                 None => NotSet,
-                Some(project_id) => Set(Some(project_id.to_string())),
+                Some(project_id) => Set(Some(*project_id.as_ref())),
             };
         }
         if let Some(title) = updating.title {
@@ -220,8 +220,8 @@ impl From<(Model, TaskUpdating)> for ActiveModel {
 impl From<(TaskId, TagId)> for tag_task::ActiveModel {
     fn from((task_id, tag_id): (TaskId, TagId)) -> Self {
         Self {
-            task_id: Set(task_id.to_string()),
-            tag_id: Set(tag_id.to_string()),
+            task_id: Set(*task_id.as_ref()),
+            tag_id: Set(*tag_id.as_ref()),
         }
     }
 }

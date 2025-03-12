@@ -22,7 +22,7 @@ impl ProjectRepository for SmartTaskRepositoryImpl {
 
     async fn get_project(&self, project_id: ProjectId) -> domain::Result<Project> {
         let conn = self.database_connection_provider.get_connection();
-        let project = ProjectEntity::find_by_id(project_id.to_string())
+        let project = ProjectEntity::find_by_id(*project_id.as_ref())
             .one(conn)
             .await
             .map_err(|e| map_db_error_to_domain_error(e))?
@@ -44,7 +44,7 @@ impl ProjectRepository for SmartTaskRepositoryImpl {
 
     async fn update_project(&self, project_updating: ProjectUpdating) -> domain::Result<Project> {
         let conn = self.database_connection_provider.get_connection();
-        let project = ProjectEntity::find_by_id(project_updating.id.to_string())
+        let project = ProjectEntity::find_by_id(*project_updating.id.as_ref())
             .one(conn)
             .await
             .map_err(|e| map_db_error_to_domain_error(e))?
@@ -61,7 +61,7 @@ impl ProjectRepository for SmartTaskRepositoryImpl {
 
     async fn delete_project(&self, project_id: ProjectId) -> domain::Result<Project> {
         let conn = self.database_connection_provider.get_connection();
-        let project = ProjectEntity::find_by_id(project_id.to_string())
+        let project = ProjectEntity::find_by_id(*project_id.as_ref())
             .one(conn)
             .await
             .map_err(|e| map_db_error_to_domain_error(e))?
@@ -80,7 +80,7 @@ impl ProjectRepository for SmartTaskRepositoryImpl {
 impl From<ProjectCreation> for ActiveModel {
     fn from(value: ProjectCreation) -> Self {
         ActiveModel {
-            id: Set(value.id.to_string()),
+            id: Set(*value.id.as_ref()),
             name: Set(value.name),
             description: Set(value.description),
             ..Default::default()

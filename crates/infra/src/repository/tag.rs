@@ -19,7 +19,7 @@ impl TagRepository for SmartTaskRepositoryImpl {
 
     async fn get_tag(&self, tag_id: TagId) -> domain::Result<Tag> {
         let conn = self.database_connection_provider.get_connection();
-        let tag = TagEntity::find_by_id(tag_id.to_string())
+        let tag = TagEntity::find_by_id(*tag_id.as_ref())
             .one(conn)
             .await
             .map_err(|e| map_db_error_to_domain_error(e))?
@@ -41,7 +41,7 @@ impl TagRepository for SmartTaskRepositoryImpl {
 
     async fn update_tag(&self, tag_updating: TagUpdating) -> domain::Result<Tag> {
         let conn = self.database_connection_provider.get_connection();
-        let tag = TagEntity::find_by_id(tag_updating.id.to_string())
+        let tag = TagEntity::find_by_id(*tag_updating.id.as_ref())
             .one(conn)
             .await
             .map_err(|e| map_db_error_to_domain_error(e))?
@@ -58,7 +58,7 @@ impl TagRepository for SmartTaskRepositoryImpl {
 
     async fn delete_tag(&self, tag_id: TagId) -> domain::Result<Tag> {
         let conn = self.database_connection_provider.get_connection();
-        let tag = TagEntity::find_by_id(tag_id.to_string())
+        let tag = TagEntity::find_by_id(*tag_id.as_ref())
             .one(conn)
             .await
             .map_err(|e| map_db_error_to_domain_error(e))?
@@ -76,7 +76,7 @@ impl TagRepository for SmartTaskRepositoryImpl {
 impl From<TagCreation> for ActiveModel {
     fn from(tag_creation: TagCreation) -> Self {
         ActiveModel {
-            id: Set(tag_creation.id.to_string()),
+            id: Set(*tag_creation.id.as_ref()),
             name: Set(tag_creation.name),
             color_r: Set(tag_creation.color.r as i32),
             color_g: Set(tag_creation.color.g as i32),

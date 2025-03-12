@@ -9,3 +9,4 @@ repository.workspace = true
 chrono = { workspace = true }
 domain = { workspace = true }
 sea-orm = { workspace = true }
+uuid = { workspace = true }

@@ -1,12 +1,13 @@
 use domain::model::project::Project;
 use sea_orm::entity::prelude::*;
 use sea_orm::prelude::DateTime;
+use uuid::Uuid;
 
 #[derive(Clone, Debug, PartialEq, Eq, DeriveEntityModel)]
 #[sea_orm(table_name = "project", rename_all = "camelCase")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
-    pub id: String,
+    pub id: Uuid,
     pub name: String,
     pub description: String,
     pub created_at: DateTime,

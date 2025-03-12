@@ -1,12 +1,13 @@
 use sea_orm::entity::prelude::*;
+use uuid::Uuid;
 
 #[derive(Clone, Debug, PartialEq, Eq, DeriveEntityModel)]
 #[sea_orm(table_name = "tag_task", rename_all = "camelCase")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
-    pub tag_id: String,
+    pub tag_id: Uuid,
     #[sea_orm(primary_key, auto_increment = false)]
-    pub task_id: String,
+    pub task_id: Uuid,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
