@@ -4,7 +4,7 @@ use sea_orm::prelude::DateTime;
 use uuid::Uuid;
 
 #[derive(Clone, Debug, PartialEq, Eq, DeriveEntityModel)]
-#[sea_orm(table_name = "task", rename_all = "camelCase")]
+#[sea_orm(table_name = "task", rename_all = "snake_case")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
     pub id: Uuid,
