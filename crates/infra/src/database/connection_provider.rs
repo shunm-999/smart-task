@@ -1,4 +1,5 @@
 use crate::database::error::map_db_error_to_domain_error;
+use migration::MigratorTrait;
 use sea_orm::{Database, DatabaseConnection, DatabaseTransaction, TransactionTrait};
 use std::future::Future;
 use std::pin::Pin;
@@ -37,6 +38,7 @@ impl<'a> DatabaseConnectionProvider {
 impl DatabaseConnectionProvider {
     pub(crate) async fn new(db_url: String) -> Self {
         let conn = Database::connect(&db_url).await.unwrap();
+        migration::Migrator::up(&conn, None).await.unwrap();
         Self { conn }
     }
 }

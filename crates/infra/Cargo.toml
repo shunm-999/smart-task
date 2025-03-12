@@ -6,6 +6,8 @@ description.workspace = true
 repository.workspace = true
 
 [dependencies]
+migration = { workspace = true }
+
 chrono = { workspace = true }
 domain = { workspace = true }
 sea-orm = { workspace = true }

@@ -1735,6 +1735,7 @@ version = "0.1.0"
 dependencies = [
  "chrono",
  "domain",
+ "migration",
  "sea-orm",
  "uuid",
 ]
