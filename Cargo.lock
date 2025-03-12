@@ -2933,16 +2933,14 @@ version = "0.1.0"
 dependencies = [
  "actix-web",
  "infra",
- "sea-orm",
  "server",
- "tokio",
 ]
 
 [[package]]
 name = "smart_task_openapi_axum"
-version = "1.2.0"
+version = "1.3.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "89ea7d4c8aee2761f6c45f5d0b7427a4c6055707d4c1180e63a9c8661d14f339"
+checksum = "dfb5f2e82825b0419761784485257091184f69784f855dc1b687afe95227323d"
 dependencies = [
  "async-trait",
  "axum",

@@ -28,7 +28,7 @@ domain = { path = "./crates/domain" }
 infra = { path = "./crates/infra" }
 migration = { path = "./crates/migration" }
 
-smart_task_openapi_axum = { version = "1.2.0" }
+smart_task_openapi_axum = { version = "1.3.0" }
 
 actix-web = { version = "4.6.0", default-features = false, features = [
     "macros",
@@ -52,6 +52,4 @@ server = { workspace = true }
 infra = { workspace = true }
 
 actix-web = { workspace = true }
-tokio = { workspace = true }
-sea-orm = { workspace = true }
 
