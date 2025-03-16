@@ -51,8 +51,8 @@ impl MapToDomain<TaskCreation> for ApiTaskCreateBody {
             project_id: None,
             title: self.title,
             description: self.description,
-            status: TaskStatus::Todo,
-            priority: TaskPriority::Medium,
+            status: self.status.map_to_domain(),
+            priority: self.priority.map_to_domain(),
             tags: vec![],
             deadline: self.deadline,
         }
