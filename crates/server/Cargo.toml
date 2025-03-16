@@ -14,3 +14,7 @@ actix-web = { workspace = true }
 chrono = { workspace = true }
 uuid = { workspace = true }
 log = "0.4.25"
+
+[dev-dependencies]
+actix-http = { workspace = true }
+serde = { workspace = true }

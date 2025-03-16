@@ -2838,12 +2838,14 @@ dependencies = [
 name = "server"
 version = "0.1.0"
 dependencies = [
+ "actix-http",
  "actix-web",
  "chrono",
  "domain",
  "infra",
  "log",
  "openapi",
+ "serde",
  "uuid",
 ]
 
