@@ -40,6 +40,10 @@ impl TestResponse {
         self.response.status().is_success()
     }
 
+    fn status(&self) -> u16 {
+        self.response.status().as_u16()
+    }
+
     async fn to_body<T: DeserializeOwned>(self) -> T {
         test::read_body_json(self.response).await
     }

@@ -17,7 +17,7 @@ impl TagClient {
     pub async fn get(
         &self,
         app: &impl Service<Request, Response = ServiceResponse<BoxBody>, Error = impl std::fmt::Debug>,
-        tag_id: String,
+        tag_id: &String,
     ) -> TestResponse {
         let get_resp = test::TestRequest::get()
             .uri(&format!("/api/v1/tags/{}", tag_id))
@@ -51,7 +51,7 @@ impl TagClient {
     pub async fn update(
         &self,
         app: &impl Service<Request, Response = ServiceResponse<BoxBody>, Error = impl std::fmt::Debug>,
-        tag_id: String,
+        tag_id: &String,
         body: ApiTagUpdateBody,
     ) -> TestResponse {
         let update_resp = test::TestRequest::put()
@@ -65,7 +65,7 @@ impl TagClient {
     pub async fn delete(
         &self,
         app: &impl Service<Request, Response = ServiceResponse<BoxBody>, Error = impl std::fmt::Debug>,
-        tag_id: String,
+        tag_id: &String,
     ) -> TestResponse {
         let delete_resp = test::TestRequest::delete()
             .uri(&format!("/api/v1/tags/{}", tag_id))
