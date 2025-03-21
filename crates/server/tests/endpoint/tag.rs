@@ -7,7 +7,7 @@ mod tests {
     use openapi::request::tag::{ApiTagCreateBody, ApiTagUpdateBody};
 
     #[actix_web::test]
-    async fn test_tag_create() {
+    async fn test_create_tag() {
         let app = setup_test_app().await;
 
         let client = TagClient::new();
@@ -29,7 +29,7 @@ mod tests {
     }
 
     #[actix_web::test]
-    async fn test_tag_get() {
+    async fn test_get_tag() {
         let app = setup_test_app().await;
 
         let client = TagClient::new();
@@ -51,7 +51,7 @@ mod tests {
     }
 
     #[actix_web::test]
-    async fn test_tag_update() {
+    async fn test_update_tag() {
         let app = setup_test_app().await;
         let client = TagClient::new();
 
@@ -80,7 +80,34 @@ mod tests {
     }
 
     #[actix_web::test]
-    async fn test_tag_delete() {
+    async fn test_not_update_tag_if_null_body() {
+        let app = setup_test_app().await;
+        let client = TagClient::new();
+
+        // 準備：タグを作成
+        let create_request = ApiTagCreateBody {
+            name: "テストタグ".to_string(),
+            color: Some(16711680),
+        };
+        let create_resp = client.create(&app, create_request).await;
+        assert!(create_resp.is_success());
+        let created_tag = create_resp.to_body::<ApiTag>().await;
+
+        // 更新を実行
+        let update_request = ApiTagUpdateBody {
+            name: None,
+            color: None,
+        };
+        let update_resp = client.update(&app, &created_tag.id, update_request).await;
+        assert!(update_resp.is_success());
+
+        let updated_tag = update_resp.to_body::<ApiTag>().await;
+        assert_eq!(updated_tag.name, "テストタグ");
+        assert_eq!(updated_tag.color, 16711680);
+    }
+
+    #[actix_web::test]
+    async fn test_delete_tag() {
         let app = setup_test_app().await;
         let client = TagClient::new();
 
@@ -104,7 +131,7 @@ mod tests {
     }
 
     #[actix_web::test]
-    async fn test_tag_crud_flow() {
+    async fn test_crud_tag() {
         let app = setup_test_app().await;
         let client = TagClient::new();
 

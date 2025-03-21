@@ -85,6 +85,37 @@ mod tests {
     }
 
     #[actix_web::test]
+    async fn test_not_update_project_if_null_body() {
+        let app = setup_test_app().await;
+        let client = ProjectClient::new();
+
+        let create_request = ApiProjectCreateBody {
+            name: "テストプロジェクト".to_string(),
+            description: "プロジェクトの説明".to_string(),
+        };
+        let create_resp = client.create(&app, create_request).await;
+        let created_project = create_resp.to_body::<ApiProject>().await;
+
+        let update_request = ApiProjectUpdateBody {
+            name: None,
+            description: None,
+        };
+        let update_resp = client
+            .update(&app, &created_project.id, update_request)
+            .await;
+        assert!(update_resp.is_success());
+
+        let get_resp = client.get(&app, &created_project.id).await;
+
+        assert!(get_resp.is_success());
+
+        let get_body = get_resp.to_body::<ApiProject>().await;
+
+        assert_eq!(get_body.name, "テストプロジェクト");
+        assert_eq!(get_body.description, "プロジェクトの説明".to_string());
+    }
+
+    #[actix_web::test]
     async fn test_delete_project() {
         let app = setup_test_app().await;
         let client = ProjectClient::new();

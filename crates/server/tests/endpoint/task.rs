@@ -9,7 +9,7 @@ mod tests {
     use openapi::request::task::{ApiTaskCreateBody, ApiTaskUpdateBody};
 
     #[actix_web::test]
-    async fn test_task_create() {
+    async fn test_create_task() {
         let app = setup_test_app().await;
 
         let client = TaskClient::new();
@@ -42,7 +42,7 @@ mod tests {
     }
 
     #[actix_web::test]
-    async fn test_task_get() {
+    async fn test_get_task() {
         let app = setup_test_app().await;
 
         let client = TaskClient::new();
@@ -75,7 +75,7 @@ mod tests {
     }
 
     #[actix_web::test]
-    async fn test_task_update() {
+    async fn test_update_task() {
         let app = setup_test_app().await;
         let client = TaskClient::new();
 
@@ -118,7 +118,50 @@ mod tests {
     }
 
     #[actix_web::test]
-    async fn test_task_delete() {
+    async fn test_not_update_task_if_null_body() {
+        let app = setup_test_app().await;
+        let client = TaskClient::new();
+
+        // 準備：タスクを作成
+        let create_request = ApiTaskCreateBody {
+            title: "テストタスク".to_string(),
+            description: "タスクの説明".to_string(),
+            status: ApiTaskStatus::Todo,
+            priority: ApiTaskPriority::Low,
+            tags: vec![],
+            deadline: Some("2012-12-12 12:12:12Z".parse::<DateTime<Utc>>().unwrap()),
+        };
+        let create_resp = client.create(&app, create_request).await;
+        assert!(create_resp.is_success());
+        let created_task = create_resp.to_body::<ApiTask>().await;
+
+        // 更新を実行
+        let update_request = ApiTaskUpdateBody {
+            project_id: None,
+            title: None,
+            description: None,
+            status: None,
+            priority: None,
+            tags: None,
+            deadline: None,
+        };
+        let update_resp = client.update(&app, &created_task.id, update_request).await;
+        assert!(update_resp.is_success());
+
+        let updated_task = update_resp.to_body::<ApiTask>().await;
+        assert_eq!(updated_task.title, "テストタスク");
+        assert_eq!(updated_task.description, "タスクの説明");
+        assert_eq!(updated_task.status, ApiTaskStatus::Todo);
+        assert_eq!(updated_task.priority, ApiTaskPriority::Low);
+        assert_eq!(updated_task.tags, vec![]);
+        assert_eq!(
+            updated_task.deadline,
+            Some("2012-12-12 12:12:12Z".parse::<DateTime<Utc>>().unwrap())
+        );
+    }
+
+    #[actix_web::test]
+    async fn test_delete_task() {
         let app = setup_test_app().await;
         let client = TaskClient::new();
 
@@ -146,7 +189,7 @@ mod tests {
     }
 
     #[actix_web::test]
-    async fn test_task_crud_flow() {
+    async fn test_crud_task() {
         let app = setup_test_app().await;
         let client = TaskClient::new();
 
