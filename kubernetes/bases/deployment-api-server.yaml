@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: smart-task-api-server
+  labels:
+    app: smart-task-api-server
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: smart-task-api-server
+  template:
+    metadata:
+      name: smart-task-api-server
+      labels:
+        app: smart-task-api-server
+    spec:
+      containers:
+        - name: smart-task-api-server
+          image: ghcr.io/shunm-999/smart-task:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+          env:
+            - name: SERVER_HOST
+              value: "0.0.0.0"
+            - name: SERVER_PORT
+              value: "8080"
+            - name: DATABASE_URL
+              value: "sqlite::memory:"
+      restartPolicy: Always
