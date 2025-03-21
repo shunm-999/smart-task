@@ -1,25 +1,26 @@
 use crate::TestResponse;
 use actix_http::body::BoxBody;
 use actix_http::Request;
-use actix_web::{dev::Service, dev::ServiceResponse, test::TestRequest};
-use openapi::request::task::{ApiTaskCreateBody, ApiTaskUpdateBody};
+use actix_web::dev::{Service, ServiceResponse};
+use actix_web::test::TestRequest;
+use openapi::request::project::{ApiProjectCreateBody, ApiProjectUpdateBody};
 
-pub struct TaskClient {}
+pub struct ProjectClient {}
 
-impl TaskClient {
+impl ProjectClient {
     pub fn new() -> Self {
         Self {}
     }
 }
 
-impl TaskClient {
+impl ProjectClient {
     pub async fn create(
         &self,
         app: &impl Service<Request, Response = ServiceResponse<BoxBody>, Error = impl std::fmt::Debug>,
-        request: ApiTaskCreateBody,
+        request: ApiProjectCreateBody,
     ) -> TestResponse {
         let res = TestRequest::post()
-            .uri("/api/v1/tasks")
+            .uri("/api/v1/projects")
             .set_json(&request)
             .send_request(app)
             .await;
@@ -32,7 +33,7 @@ impl TaskClient {
         id: &str,
     ) -> TestResponse {
         let res = TestRequest::get()
-            .uri(&format!("/api/v1/tasks/{}", id))
+            .uri(&format!("/api/v1/projects/{}", id))
             .send_request(app)
             .await;
         TestResponse::new(res)
@@ -43,7 +44,7 @@ impl TaskClient {
         app: &impl Service<Request, Response = ServiceResponse<BoxBody>, Error = impl std::fmt::Debug>,
     ) -> TestResponse {
         let res = TestRequest::get()
-            .uri("/api/v1/tasks")
+            .uri("/api/v1/projects")
             .send_request(app)
             .await;
         TestResponse::new(res)
@@ -53,10 +54,10 @@ impl TaskClient {
         &self,
         app: &impl Service<Request, Response = ServiceResponse<BoxBody>, Error = impl std::fmt::Debug>,
         id: &str,
-        request: ApiTaskUpdateBody,
+        request: ApiProjectUpdateBody,
     ) -> TestResponse {
         let res = TestRequest::put()
-            .uri(&format!("/api/v1/tasks/{}", id))
+            .uri(&format!("/api/v1/projects/{}", id))
             .set_json(&request)
             .send_request(app)
             .await;
@@ -69,7 +70,7 @@ impl TaskClient {
         id: &str,
     ) -> TestResponse {
         let res = TestRequest::delete()
-            .uri(&format!("/api/v1/tasks/{}", id))
+            .uri(&format!("/api/v1/projects/{}", id))
             .send_request(app)
             .await;
         TestResponse::new(res)
