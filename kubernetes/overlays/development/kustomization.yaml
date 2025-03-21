@@ -9,3 +9,7 @@ patches:
     target:
       kind: Namespace
       name: smart-task-namespace
+  - path: patch-deployment-api-server.yaml
+    target:
+      kind: Deployment
+      name: smart-task-api-server
