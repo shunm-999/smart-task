@@ -5,7 +5,7 @@
 Gateway API は標準の Kubernetes API ではないため、まず CRD をインストールする必要があります。
 
 ```bash
-kubectl apply -f https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.0.0/standard-install.yaml
+kubectl kustomize "https://github.com/nginxinc/nginx-gateway-fabric/config/crd/gateway-api/standard?ref=v1.5.0" | kubectl apply -f -
 ```
 
 ## 2. Gateway Controller をインストール
@@ -13,7 +13,8 @@ kubectl apply -f https://github.com/kubernetes-sigs/gateway-api/releases/downloa
 Gateway を機能させるには Gateway Controller が必要です。開発用には `nginx-gateway` などが使いやすいです。
 
 ```bash
-kubectl apply -f https://github.com/nginxinc/nginx-gateway-fabric/releases/latest/download/deploy.yaml
+kubectl apply -f https://raw.githubusercontent.com/nginxinc/nginx-gateway-fabric/v1.5.0/deploy/crds.yaml
+kubectl apply -f https://raw.githubusercontent.com/nginxinc/nginx-gateway-fabric/v1.5.0/deploy/default/deploy.yaml
 ```
 
 ## 3. kind クラスタの作成（ポートマッピング付き）
