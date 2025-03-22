@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: smart-task-api-server
+spec:
+  selector:
+    app: smart-task-api-server
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
