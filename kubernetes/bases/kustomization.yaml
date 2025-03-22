@@ -3,4 +3,7 @@ kind: Kustomization
 resources:
   - namespace.yaml
   - configmap-api-server.yaml
+  - gateway.yaml
+  - httproute-api-server.yaml
+  - service-api-server.yaml
   - deployment-api-server.yaml
