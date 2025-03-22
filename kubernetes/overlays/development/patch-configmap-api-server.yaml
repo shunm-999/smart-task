@@ -1,0 +1,6 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: smart-task-api-server
+data:
+  DATABASE_URL: "sqlite::memory:"
